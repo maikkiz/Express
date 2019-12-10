@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+
+//ludaan mockup tietokanta
 let todos = [{
         id: 1,
         title: "Koulu",
@@ -21,10 +23,15 @@ let todos = [{
     }
 ]
 
+//haetaan kaikki todot
 router.get("/todos", (request, response) => {
     response.status(200).send(todos);
 });
 
+//haetaan todo id:n perusteella
+//haetaan id pyynnön parametreista ja muutetaan se numeroksi
+//verrataan haettua id:tä tietokannan id:siin
+//jos id on tietokannassa palautetaan todo
 router.get("/todos/:id", (request, response) => {
 
     const id = Number(request.params.id);
@@ -37,7 +44,9 @@ router.get("/todos/:id", (request, response) => {
     }
 });
 
-
+//generoidaan id uusille todoille
+//tarkistetaan mikä on tietokannan suurin id
+//palautetaan suurin id ja lisätään siihen yksi
 const generateId = () => {
 
     const maxId = todos.length > 0 ?
@@ -46,6 +55,10 @@ const generateId = () => {
     return maxId + 1
 }
 
+//lähetetään uusi todo post metodilla
+//jos request bodysta puuttuu title tai due annetaan error
+//asetetaan id:si generoitu id ja parametreiksi pyynnön parametrit
+//lisätään todo todos listaan ja näytetään lisätty todo
 router.post('/todos', (request, response) => {
 
     const body = request.body;
@@ -68,6 +81,10 @@ router.post('/todos', (request, response) => {
     response.json(todo);
 });
 
+//lisätään uusi todo tai muokataan olemassa olevaa put metodilla
+//tarkastetaan löytyykö id jo
+//jos id:tä ei löydy lisätään uusi todo
+//jos id löytyy muokataan todo
 router.put("/todos/:id", (request, response) => {
 
     const body = request.body;
@@ -100,6 +117,7 @@ router.put("/todos/:id", (request, response) => {
     }
 });
 
+//poistetaan todo id:n perusteella
 router.delete('/todos/:id', (request, response) => {
     const id = Number(request.params.id)
     todos = todos.filter(todo => todo.id !== id)
